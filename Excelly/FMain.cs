@@ -166,6 +166,8 @@ namespace Excelly
                     if (dgvMain.CurrentCell.Value.ToString().StartsWith("="))
                     {
                         string func = dgvMain.CurrentCell.Value.ToString();
+                        Calculator c = new Calculator();
+                        var res = c.ParseCode(func.Substring(1));
                         string function = func.Substring(1, func.IndexOf("(") - 1);
                         if (funcNames.Contains(function))
                         {
