@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace Excelly
@@ -67,7 +65,26 @@ namespace Excelly
                                 case ')':
                                     result.Add(new Token(TokenType.RPAREN, ")"));
                                     break;
+                                case '[':
+                                    result.Add(new Token(TokenType.LSBRACKET, "["));
+                                    break;
+                                case ']':
+                                    result.Add(new Token(TokenType.RSBRACKET, "]"));
+                                    break;
+                                case ',':
+                                    result.Add(new Token(TokenType.COMMA, ","));
+                                    break;
                                 default:
+                                    if (it != code.Length - 1)
+                                        if (char.IsLetter(code[it]))
+                                            if (char.IsDigit(code[it + 1]) || 
+                                                (Token.IsSplitChar(code[it + 1]) && code[it + 1] != '(' && code[it + 1] != ')'))
+                                            {
+                                                stage = TokenType.CELL;
+                                                marker = it;
+                                                break;
+                                            }
+
                                     stage = TokenType.FUNCTION;
                                     marker = it;
                                     break;
@@ -103,10 +120,92 @@ namespace Excelly
                             }
                             break;
                         }
+                    case TokenType.CELL:
+                        {
+                            if(Token.IsSplitChar(code[it]))
+                            {
+                                stage = TokenType.NONE;
+                                result.Add(new Token(TokenType.CELL, subString(code, marker, it--)));
+                            }
+
+                            break;
+                        }
                 }
             }
 
             return result.ToArray();
+        }
+
+        private Stack<Token> ToPostFix(Token[] toks)
+        {
+            Stack<Token> output = new Stack<Token>();
+            Stack<Token> op = new Stack<Token>();
+            for(int i = 0; i < toks.Length; i++)
+            {
+                switch (toks[i].Type)
+                {
+                    case TokenType.PLUS:
+                    case TokenType.MINUS:
+                        op.Push(toks[i]);
+                        break;
+                    case TokenType.ASTERISK:
+                    case TokenType.DIVIDE:
+                        Token top = op.Peek();
+                        if(top.Type == TokenType.ASTERISK || top.Type == TokenType.DIVIDE || top.Type == TokenType.PERCENT)
+                        {
+
+                        }
+                        else if(top.Type == TokenType.PLUS || top.Type == TokenType.MINUS)
+                        {
+
+                        }
+
+                        output.Push(op.Pop());
+                        op.Push(toks[i]);
+                        break;
+                    case TokenType.LPAREN:
+                        op.Push(toks[i]);
+                        break;
+                    case TokenType.FUNCTION:
+                        int mark = i; //remember function token
+                        if (toks[++i].Type != TokenType.LPAREN)
+                            throw new System.Exception();
+
+                        List<Token> args = new List<Token>();
+                        while (toks[i].Type != TokenType.RPAREN)
+                        {
+                            while(toks[i].Type != TokenType.COMMA)
+                            {
+                                List<Token> arg = new List<Token>();
+                                arg.Add(toks[i++]);
+                                args.Add(Evaluate(ToPostFix(arg.ToArray())));
+                            }
+                        }
+
+                        foreach (Token t in args)
+                            output.Push(t);
+                        op.Push(toks[mark]);
+                        break;
+                }
+            }
+
+        }
+
+        private Token Evaluate(Stack<Token> postToks)
+        {
+
+            Token tok;
+            while(postToks.Count > 0)
+            {
+                tok = postToks.Pop();
+                switch (tok.Type)
+                {
+                    case TokenType.PLUS:
+                        break;
+                }
+            }
+
+            throw new System.NotImplementedException();
         }
 
         private string subString(string str, int mark, int cur)
@@ -129,7 +228,7 @@ namespace Excelly
                 case '%':
                 case '(':
                 case ')':
-                case ':': //아직 안함ㅋ
+                case ',':
                     return true;
             }
             return false;
@@ -158,6 +257,9 @@ namespace Excelly
         DIVIDE,
         LPAREN,
         RPAREN,
+        LSBRACKET,
+        RSBRACKET,
+        COMMA,
         ERROR
     }
 }
