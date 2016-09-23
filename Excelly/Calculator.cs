@@ -188,7 +188,7 @@ namespace Excelly
                         break;
                 }
             }
-
+            throw new System.NotImplementedException();
         }
 
         private Token Evaluate(Stack<Token> postToks)

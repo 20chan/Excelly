@@ -37,6 +37,16 @@ namespace Excelly
         }
         #endregion
 
+        public static double Potential(double percent)
+        {
+            return (_rand.NextDouble() < percent) ? 1 : 0;
+        }
+        
+        public static double Abs(double value)
+        {
+            return Math.Abs(value);
+        }
+
         public static double Sum(double[] values)
         {
             return values.Sum();

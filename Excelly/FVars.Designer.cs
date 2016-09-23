@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,30 +52,32 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
-            // Column2
+            // Column5
             // 
-            this.Column2.HeaderText = "Name";
-            this.Column2.Name = "Column2";
+            this.Column5.HeaderText = "Argument";
+            this.Column5.Name = "Column5";
+            this.Column5.Width = 150;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Type";
+            this.Column3.Items.AddRange(new object[] {
+            "SUM",
+            "RAND",
+            "RANDDOUBLE",
+            "POT"});
+            this.Column3.Name = "Column3";
+            this.Column3.Width = 150;
             // 
             // Column4
             // 
             this.Column4.HeaderText = "Length";
             this.Column4.Name = "Column4";
             // 
-            // Column3
+            // Column2
             // 
-            this.Column3.HeaderText = "Type";
-            this.Column3.Items.AddRange(new object[] {
-            "RAND",
-            "RANDDOUBLE"});
-            this.Column3.Name = "Column3";
-            this.Column3.Width = 150;
-            // 
-            // Column5
-            // 
-            this.Column5.HeaderText = "Argument";
-            this.Column5.Name = "Column5";
-            this.Column5.Width = 150;
+            this.Column2.HeaderText = "Name";
+            this.Column2.Name = "Column2";
             // 
             // FVars
             // 

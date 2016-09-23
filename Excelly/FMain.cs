@@ -14,7 +14,7 @@ namespace Excelly
         private Dictionary<Point, string> funcCells = new Dictionary<Point, string>();
         private readonly string[] funcNames = new string[]
         {
-            "AVERAGE", "SUM", "RAND", "RANDDOUBLE", "VAR", "DEV"
+            "AVERAGE", "SUM", "RAND", "RANDDOUBLE","POT", "VAR", "DEV"
         };
         public FVars varsManager;
         
@@ -103,6 +103,12 @@ namespace Excelly
                     return CellFunc.RandDouble(Convert.ToDouble(args[0])).ToString();
                 else
                     return CellFunc.RandDouble(Convert.ToDouble(args[0]), Convert.ToDouble(args[1])).ToString();
+            }
+            if(function == "POT")
+            {
+                if (args.Length == 1)
+                    return CellFunc.Potential(Convert.ToDouble(args[0])).ToString();
+                
             }
             if (function == "VAR")
             {
