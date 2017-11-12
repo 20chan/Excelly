@@ -27,6 +27,9 @@ namespace Excelly.Execution
         private static bool IsParen(char c)
             => c == '(' || c == ')';
 
+        public static IEnumerable<Token> Parse(string code)
+            => new Lexer(code).Parse();
+
         public IEnumerable<Token> Parse()
         {
             while (!IsEof)
@@ -62,7 +65,7 @@ namespace Excelly.Execution
                     else
                         throw new Exception("Number has two dot");
                 }
-                if (!char.IsDigit(Current)) break;
+                else if (!char.IsDigit(Current)) break;
 
                 _index++;
             }

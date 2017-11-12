@@ -7,10 +7,10 @@ namespace Excelly.Execution
 {
     public class Parser
     {
-        private Stack<Token> _tokens;
+        private Queue<Token> _tokens;
         public Parser(IEnumerable<Token> tokens)
         {
-            _tokens = new Stack<Token>(tokens);
+            _tokens = new Queue<Token>(tokens);
         }
 
         public Parser(string code) : this(new Lexer(code).Parse())
@@ -18,8 +18,12 @@ namespace Excelly.Execution
 
         }
 
+        public bool IsEmpty => _tokens.Count == 0;
         public Token Top => _tokens.Peek();
-        public Token Pop() => _tokens.Pop();
+        public Token Pop() => _tokens.Dequeue();
+
+        public static Expression Parse(string code)
+            => new Parser(code).Parse();
 
         public Expression Parse()
         {
@@ -29,7 +33,7 @@ namespace Excelly.Execution
         private Expression ParseArith()
         {
             var lexpr = ParseTerm();
-            if (Top.Code == "+" || Top.Code == "-")
+            if (!IsEmpty && (Top.Code == "+" || Top.Code == "-"))
             {
                 var op = Pop();
                 var rexpr = ParseArith();
@@ -43,11 +47,11 @@ namespace Excelly.Execution
 
         private Expression ParseTerm()
         {
-            var lexpr = ParseAtom();
-            if (Top.Code == "*" || Top.Code == "/")
+            var lexpr = ParseFactor();
+            if (!IsEmpty && (Top.Code == "*" || Top.Code == "/"))
             {
                 var op = Pop();
-                var rexpr = ParseFactor();
+                var rexpr = ParseTerm();
                 if (op.Code == "*")
                     return Expression.Multiply(lexpr, rexpr);
                 else
@@ -59,9 +63,15 @@ namespace Excelly.Execution
         private Expression ParseFactor()
         {
             if (Top.Code == "+")
-                return Expression.UnaryPlus(ParsePower());
+            {
+                Pop();
+                return Expression.UnaryPlus(ParseFactor());
+            }
             else if (Top.Code == "-")
-                return Expression.Negate(ParsePower());
+            {
+                Pop();
+                return Expression.Negate(ParseFactor());
+            }
             else
                 return ParsePower();
         }
@@ -69,7 +79,7 @@ namespace Excelly.Execution
         private Expression ParsePower()
         {
             var lexpr = ParseAtom();
-            if (Top.Code == "^")
+            if (!IsEmpty && Top.Code == "^")
             {
                 Pop();
                 var rexpr = ParsePower();
@@ -84,11 +94,18 @@ namespace Excelly.Execution
             {
                 Pop();
                 var expr = Parse();
-                if (Top.Code != ")")
+                if (IsEmpty || Top.Code != ")")
                     throw new Exception("Paren not match");
+                Pop();
                 return expr;
             }
-            else return Expression.Constant(Top);
+            else
+            {
+                if (Top.Type == TokenType.Number)
+                    return Expression.Constant(Convert.ToDouble(Pop().Code));
+                else
+                    throw new Exception("Not number");
+            }
         }
     }
 }
