@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Execution\Lexer.cs" />
+    <Compile Include="Execution\Parser.cs" />
     <Compile Include="Execution\Token.cs" />
     <Compile Include="FMain.cs">
       <SubType>Form</SubType>
