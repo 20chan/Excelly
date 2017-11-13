@@ -55,6 +55,31 @@ namespace Excelly.Execution.Tests
                 Parser.Parse("(1+2)*3"));
         }
 
+        [TestCategory("Parser")]
+        [TestMethod()]
+        public void ParseErrTest()
+        {
+            try
+            {
+                AssertExpr(Expr.Constant(1.0),
+                    Parser.Parse("1"));
+
+                Assert.Fail();
+            }
+            catch (AssertFailedException) { }
+
+            try
+            {
+                AssertExpr(Expr.Add(
+                    Expr.Constant(1.0),
+                    Expr.Constant(2.0)),
+                    Parser.Parse("2+1"));
+
+                Assert.Fail();
+            }
+            catch (AssertFailedException) { }
+        }
+
         public static void AssertExpr(Expr expected, Expr actual)
         {
             if (expected.NodeType != actual.NodeType)
