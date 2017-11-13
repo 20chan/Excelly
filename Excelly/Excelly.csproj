@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Execution\Evaluate.cs" />
     <Compile Include="Execution\Lexer.cs" />
     <Compile Include="Execution\Parser.cs" />
+    <Compile Include="Execution\Registered.cs" />
     <Compile Include="Execution\Token.cs" />
     <Compile Include="FMain.cs">
       <SubType>Form</SubType>
