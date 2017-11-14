@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Execution\Evaluate.cs" />
     <Compile Include="Execution\Expr.cs" />
     <Compile Include="Execution\Lexer.cs" />
     <Compile Include="Execution\Parser.cs" />

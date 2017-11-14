@@ -25,6 +25,9 @@ namespace Excelly.Execution
             NodeType = type;
         }
 
+        public object Eval()
+            => Evaluate.Execute(this);
+
         public static Expr Add(Expr left, Expr right)
             => new BinaryExpr(ExprType.Add, left, right);
 
