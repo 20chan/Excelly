@@ -28,11 +28,39 @@ namespace Excelly.Execution.Tests
         public void ParseArithTest()
         {
             CollectionAssert.AreEqual(new Token[] {
-                    new Token("1", TokenType.Number),
-                    new Token("+", TokenType.Operator),
-                    new Token("2", TokenType.Number)
-                },
+                new Token("1", TokenType.Number),
+                new Token("+", TokenType.Operator),
+                new Token("2", TokenType.Number)
+            },
                 Lexer.Parse("1 + 2").ToArray());
+        }
+
+        [TestCategory("Lexer")]
+        [TestMethod()]
+        public void ParseNameTest()
+        {
+            CollectionAssert.AreEqual(new Token[] { new Token("abcdef", TokenType.Name) },
+                Lexer.Parse("abcdef").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] { new Token("ABC_123_deF", TokenType.Name) },
+                Lexer.Parse("ABC_123_deF").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("1", TokenType.Number),
+                new Token("+", TokenType.Operator),
+                new Token("A2", TokenType.Name),
+            },
+                Lexer.Parse("1 + A2").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a_1", TokenType.Name),
+                new Token("-", TokenType.Operator),
+                new Token("(", TokenType.Paren),
+                new Token("-", TokenType.Operator),
+                new Token("b_2", TokenType.Name),
+                new Token(")", TokenType.Paren)
+            },
+                Lexer.Parse("a_1-(-b_2)").ToArray());
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Excelly.Execution
 
         private char Current => Code[_index];
         private bool IsEof => _index == Code.Length;
+        private char Pop() => Code[_index++];
 
         private static bool IsWhiteSpace(char c)
             => c == ' ' || c == '\n' || c == '\r' || c == '\t';
@@ -38,17 +39,18 @@ namespace Excelly.Execution
 
         internal Token GetNextToken()
         {
-            while (IsWhiteSpace(Current)) _index++;
+            while (IsWhiteSpace(Current)) Pop();
             if (IsOperator(Current)) return GetOperatorToken();
             if (char.IsDigit(Current)) return GetNumberToken();
             if (IsParen(Current)) return GetParenToken();
+            if (char.IsLetter(Current)) return GetParameter();
 
             throw new Exception("Must not happened");
         }
 
         private Token GetOperatorToken()
         {
-            return new Token(Code[_index++].ToString(), TokenType.Operator);
+            return new Token(Pop().ToString(), TokenType.Operator);
         }
 
         private Token GetNumberToken()
@@ -67,7 +69,7 @@ namespace Excelly.Execution
                 }
                 else if (!char.IsDigit(Current)) break;
 
-                _index++;
+                Pop();
             }
 
             return new Token(Code.Substring(startIndex, _index - startIndex), TokenType.Number);
@@ -75,7 +77,20 @@ namespace Excelly.Execution
 
         private Token GetParenToken()
         {
-            return new Token(Code[_index++].ToString(), TokenType.Paren);
+            return new Token(Pop().ToString(), TokenType.Paren);
+        }
+
+        private Token GetParameter()
+        {
+            var startIndex = _index;
+
+            while (!IsEof)
+            {
+                if (char.IsLetterOrDigit(Current) || Current == '_') Pop();
+                else break;
+            }
+
+            return new Token(Code.Substring(startIndex, _index - startIndex), TokenType.Name);
         }
     }
 }

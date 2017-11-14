@@ -19,5 +19,6 @@
         Operator,
         Number,
         Paren,
+        Name,
     }
 }
