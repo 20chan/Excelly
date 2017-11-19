@@ -15,6 +15,8 @@ namespace Excelly.Execution
         Pow,
         UnaryPlus,
         UnaryMinus,
+        Function,
+        Parameter,
         Constant,
     }
     public abstract class Expr
@@ -49,6 +51,12 @@ namespace Excelly.Execution
         public static Expr Negate(Expr content)
             => new UnaryExpr(ExprType.UnaryMinus, content);
 
+        public static Expr Function(string name, Expr[] parameters)
+            => new FunctionExpr(name, parameters);
+
+        public static Expr ParameterExpr(string name)
+            => new ParameterExpr(name);
+
         public static Expr Constant(object value)
             => new ConstantExpr(value);
     }
@@ -72,6 +80,28 @@ namespace Excelly.Execution
         internal UnaryExpr(ExprType type, Expr content) : base(type)
         {
             Content = content;
+        }
+    }
+
+    public class FunctionExpr : Expr
+    {
+        public string Name { get; }
+        public Expr[] Parameters { get; }
+
+        internal FunctionExpr(string name, Expr[] parameters) : base(ExprType.Function)
+        {
+            Name = name;
+            Parameters = parameters;
+        }
+    }
+
+    public class ParameterExpr : Expr
+    {
+        public string Name { get; }
+
+        internal ParameterExpr(string name) : base(ExprType.Parameter)
+        {
+            Name = name;
         }
     }
 

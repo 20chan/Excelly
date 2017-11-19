@@ -18,7 +18,10 @@
         None = 0,
         Operator,
         Number,
-        Paren,
+        LParen,
+        RParen,
+        Colon,
+        Comma,
         Name,
     }
 }

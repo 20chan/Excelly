@@ -53,6 +53,22 @@ namespace Excelly.Execution.Tests
                     Expr.Constant(2.0)),
                 Expr.Constant(3.0)),
                 Parser.Parse("(1+2)*3"));
+
+            AssertExpr(Expr.Function("do", new Expr[] { }),
+                Parser.Parse("do()"));
+
+            AssertExpr(Expr.Add(
+                Expr.Constant(1.0),
+                Expr.Function("PI", new Expr[] { })),
+                Parser.Parse("1 + PI()"));
+
+            AssertExpr(Expr.Function("print", new Expr[] {
+                Expr.Function("plus", new Expr[] {
+                    Expr.Constant(1.0),
+                    Expr.Constant(1.0)
+                    })
+                }),
+                Parser.Parse("print(plus(1, 1))"));
         }
 
         [TestCategory("Parser")]

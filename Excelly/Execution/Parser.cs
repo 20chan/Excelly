@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace Excelly.Execution
@@ -88,11 +89,11 @@ namespace Excelly.Execution
 
         private Expr ParseAtom()
         {
-            if (Top.Code == "(")
+            if (Top.Type == TokenType.LParen)
             {
                 Pop();
                 var expr = Parse();
-                if (IsEmpty || Top.Code != ")")
+                if (IsEmpty || Top.Type != TokenType.RParen)
                     throw new Exception("Paren not match");
                 Pop();
                 return expr;
@@ -101,9 +102,37 @@ namespace Excelly.Execution
             {
                 if (Top.Type == TokenType.Number)
                     return Expr.Constant(Convert.ToDouble(Pop().Code));
-                else
-                    throw new Exception("Not number");
+                else if (Top.Type == TokenType.Name)
+                {
+                    var name = Pop().Code;
+                    if (Top.Type == TokenType.LParen)
+                    {
+                        Pop(); // (
+                        var parameters = ParseParameters();
+                        Pop(); // )
+                        return Expr.Function(name, parameters);
+                    }
+                    else
+                        return Expr.ParameterExpr(name);
+                }
+                else throw new Exception("Unexpected Type");
             }
+        }
+
+        private Expr[] ParseParameters()
+        {
+            if (Top.Code == ")") return new Expr[] { };
+
+            var buffer = new List<Expr>();
+            buffer.Add(Parse());
+
+            while (Top.Code != ")")
+            {
+                if (Pop().Type == TokenType.Comma)
+                buffer.Add(Parse());
+            }
+
+            return buffer.ToArray();
         }
     }
 }

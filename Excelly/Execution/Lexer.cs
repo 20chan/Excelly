@@ -44,6 +44,8 @@ namespace Excelly.Execution
             if (char.IsDigit(Current)) return GetNumberToken();
             if (IsParen(Current)) return GetParenToken();
             if (char.IsLetter(Current)) return GetParameter();
+            if (Current == ',') return new Token(Pop().ToString(), TokenType.Comma);
+            if (Current == ':') return new Token(Pop().ToString(), TokenType.Colon);
 
             throw new Exception("Must not happened");
         }
@@ -77,7 +79,8 @@ namespace Excelly.Execution
 
         private Token GetParenToken()
         {
-            return new Token(Pop().ToString(), TokenType.Paren);
+            var tok = Pop().ToString();
+            return new Token(tok, tok == "(" ? TokenType.LParen : TokenType.RParen);
         }
 
         private Token GetParameter()

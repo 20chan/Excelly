@@ -55,12 +55,77 @@ namespace Excelly.Execution.Tests
             CollectionAssert.AreEqual(new Token[] {
                 new Token("a_1", TokenType.Name),
                 new Token("-", TokenType.Operator),
-                new Token("(", TokenType.Paren),
+                new Token("(", TokenType.LParen),
                 new Token("-", TokenType.Operator),
                 new Token("b_2", TokenType.Name),
-                new Token(")", TokenType.Paren)
+                new Token(")", TokenType.RParen)
             },
                 Lexer.Parse("a_1-(-b_2)").ToArray());
+        }
+
+        [TestCategory("Lexer")]
+        [TestMethod()]
+        public void ParseFunctionTest()
+        {
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token(")", TokenType.RParen)
+            },
+            Lexer.Parse("a()").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("1", TokenType.Number),
+                new Token(")", TokenType.RParen)
+            },
+            Lexer.Parse("a(1)").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("(", TokenType.LParen),
+                new Token("1", TokenType.Number),
+                new Token(")", TokenType.RParen),
+                new Token("+", TokenType.Operator),
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("1", TokenType.Number),
+                new Token(")", TokenType.RParen),
+                new Token(")", TokenType.RParen)
+            },
+            Lexer.Parse("a((1)+a(1))").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("1", TokenType.Number),
+                new Token(",", TokenType.Comma),
+                new Token("2", TokenType.Number),
+                new Token(",", TokenType.Comma),
+                new Token("b", TokenType.Name),
+                new Token(")", TokenType.RParen)
+            },
+            Lexer.Parse("a(1, 2, b)").ToArray());
+
+            CollectionAssert.AreEqual(new Token[] {
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token("(", TokenType.LParen),
+                new Token("a", TokenType.Name),
+                new Token("(", TokenType.LParen),
+                new Token(")", TokenType.RParen),
+                new Token(")", TokenType.RParen),
+                new Token(")", TokenType.RParen),
+                new Token(")", TokenType.RParen),
+                new Token(")", TokenType.RParen),
+            },
+            Lexer.Parse("a(a(a((a()))))").ToArray());
         }
     }
 }
