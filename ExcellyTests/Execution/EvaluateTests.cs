@@ -25,6 +25,18 @@ namespace Excelly.Execution.Tests
                 Parser.Parse("(1+0.5*2)^10").Eval());
         }
 
+        [Registered("Sum")]
+        static double Sum(object[] parameters) => parameters.Cast<double>().Sum();
+
+        [TestCategory("Evaluate")]
+        [TestMethod()]
+        public void ExecuteFunctionTest()
+        {
+            Registered.RegisterAll(typeof(EvaluateTests));
+            Assert.AreEqual(3.0,
+                Parser.Parse("Sum(1, 2)").Eval());
+        }
+
         [TestCategory("Evaluate")]
         [TestMethod()]
         public void ExecuteErrTest()

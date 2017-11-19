@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Excelly.Execution
 {
@@ -31,6 +32,16 @@ namespace Excelly.Execution
             {
                 dynamic res = Execute((expr as UnaryExpr).Content);
                 return expr.NodeType == ExprType.UnaryPlus ? res : -res;
+            }
+            else if (expr is FunctionExpr)
+            {
+                var exprF = expr as FunctionExpr;
+                return Registered.RegisteredFunctions[exprF.Name](exprF.Parameters.Select(e => e.Eval()).ToArray());
+            }
+            else if (expr is ParameterExpr)
+            {
+                var exprP = expr as ParameterExpr;
+                return Registered.RegisteredVariables[exprP.Name];
             }
             else if (expr is ConstantExpr)
             {
